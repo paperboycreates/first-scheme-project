@@ -1,0 +1,86 @@
+;Lab 1 - Scheme Problem Set - Jacob Sheets
+;1. Write a Scheme function that computes the volume of sphere, given its radius.
+(define sphere
+  (let ((pi 3.14159))
+  (lambda (r) (/ (* (* r r r) 4 pi ) 3))))
+(sphere 5)
+;=> 523.5983333333332
+
+;2. Write a Scheme function that takes two number parameters, A and B, and returns A ;raised to the B power.
+(define pow
+  (lambda (a b)
+    (let cont ((rest b) (result 1))
+      (if (zero? rest)
+        result
+        (cont (- rest 1) (* a result))))))
+
+(pow 3 3)
+;=> 27
+
+;3. Write a Scheme function that returns the number of zeros in a given simple list ;of numbers.
+(define count 
+  (lambda (ls)
+  (cond
+    ((null? ls) 0)
+    ((zero? (car ls)) (+ 1 (count (cdr ls))))
+    (else (count (cdr ls))))))
+
+(count (list 9 0 4 2 1 0))
+;=> 2
+
+;4. Write a Scheme tail-recursive function to compute the length of an arbitrary list.
+(define (len ls)
+   (cond ((null? ls) 0)
+         (else (+ 1 (len (cdr ls))))))
+
+(len '(1 (5 (5)) 3))
+
+;5. Write a Scheme function that returns the reverse of its simple list parameter.
+(define (rev ls)
+  (if (null? ls) ls
+  (append (rev (cdr ls)) (list (car ls)))))
+
+(rev '(a b c))
+
+
+;6. Write a higher-order function twice that takes as a parameter a function of one argument and returns a function that represents the application of that ;function to its argument twice. Given the usual definition of the square function, what function is (twice (twice square))?
+(define square 
+  (lambda (x) (* x x)))
+
+(define (twice f)
+  (lambda (x) (f (f x))))
+
+(twice square)
+;=> #<Closure> 
+;I really tried to find out why I could not get #<procedure>
+((twice square) 2)
+;=> 16
+((twice (twice square)) 10)
+;=> 10000000000000000
+
+;7. Write a higher-order function inc_n that takes an integer n as a parameter and returns the nth increment function, which increments by its parameter n. Thus in Scheme syntax, ((inc_n 3) 2) => 5 and ((inc_n -2) 3) => 1.
+(define (inc_n n)
+  (lambda (x) (+ n x)))
+
+((inc_n 10) 2)
+;=> 12
+((inc_n -2) 3)
+;=> 1
+(inc_n 10)
+; => #<Closure> Im using repl.it so im assuming there complier just uses <Closure> vs <procedure> 
+
+;8. Suppose that you want to use a list data structure to implement a Set data type. Write insert and member operations. (You may have to rename the functions to ;avoid naming conflicts.)
+(define (member x alist)
+  (cond ((null? alist) #f)
+        ((equal? x (car alist)) #t)
+        (else (member x (cdr alist)))))
+
+ (member 4 (list 1 2 4))
+ ;=> #t
+
+ (define (insert x ls)
+  (cond ((null? ls) (list x))
+        (else (cons x ls))))
+
+(insert 4 (list 1 2))
+;=> (4 1 2)
